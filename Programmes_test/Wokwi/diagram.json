@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "author": "Corentin R",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "wokwi-arduino-nano", "id": "nano", "top": -14.4, "left": 37.9, "attrs": {} },
+    { "type": "wokwi-slide-switch", "id": "sw1", "top": -139.6, "left": 12.7, "attrs": {} },
+    { "type": "wokwi-slide-switch", "id": "sw2", "top": -139.6, "left": 51.1, "attrs": {} },
+    { "type": "wokwi-slide-switch", "id": "sw3", "top": -139.6, "left": 223.9, "attrs": {} },
+    {
+      "type": "wokwi-led",
+      "id": "led2",
+      "top": -138,
+      "left": -92.2,
+      "attrs": { "color": "green" }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led3",
+      "top": -138,
+      "left": -73,
+      "attrs": { "color": "purple" }
+    },
+    { "type": "wokwi-servo", "id": "servo1", "top": 65.2, "left": -172.8, "attrs": {} },
+    { "type": "wokwi-servo", "id": "servo2", "top": 190, "left": -172.8, "attrs": {} },
+    { "type": "wokwi-mpu6050", "id": "imu1", "top": 138.22, "left": 79.12, "attrs": {} },
+    { "type": "wokwi-microsd-card", "id": "sd1", "top": -114.97, "left": -278.33, "attrs": {} }
+  ],
+  "connections": [
+    [ "sw2:2", "nano:", "green", [ "v0" ] ],
+    [ "sw3:2", "nano:4", "green", [ "v28.8", "h-105.5" ] ],
+    [ "nano:GND.2", "sw3:3", "black", [ "v-38.4", "h86.2" ] ],
+    [ "nano:GND.2", "sw2:3", "black", [ "v-38.4", "h-86.6" ] ],
+    [ "nano:GND.2", "sw1:3", "black", [ "v-38.4", "h-173" ] ],
+    [ "nano:2", "sw1:2", "green", [ "v-76.8", "h-124.9" ] ],
+    [ "nano:GND.2", "led2:C", "black", [ "v-38.4", "h-163.6" ] ],
+    [ "nano:GND.2", "led3:C", "black", [ "v-38.4", "h-125.2" ] ],
+    [ "nano:6", "led2:A", "green", [ "v-57.6", "h-182.4" ] ],
+    [ "nano:7", "led3:A", "green", [ "v-67.2", "h-153.6" ] ],
+    [ "nano:GND.1", "servo1:GND", "black", [ "v19.2", "h-374.4", "v48" ] ],
+    [ "servo2:GND", "nano:GND.1", "black", [ "h-19.2", "v-172.8", "h374.4" ] ],
+    [ "nano:5V", "servo1:V+", "red", [ "v9.6", "h-345.6", "v67.1" ] ],
+    [ "nano:5V", "servo2:V+", "red", [ "v9.6", "h-345.6", "v182.3" ] ],
+    [ "nano:5V", "sw3:1", "red", [ "v9.6", "h48", "v-153.6", "h19.2" ] ],
+    [ "nano:5V", "sw2:1", "red", [ "v9.6", "h48", "v-115.2", "h-144" ] ],
+    [ "nano:5V", "sw1:1", "red", [ "v9.6", "h48", "v-115.2", "h-144" ] ],
+    [ "nano:3", "sw2:2", "green", [ "v-86.4", "h-76.9" ] ],
+    [ "imu1:VCC", "nano:5V", "red", [ "v-86.4", "h9.68" ] ],
+    [ "imu1:GND", "nano:GND.1", "black", [ "v-76.8", "h38.48" ] ],
+    [ "imu1:SCL", "nano:A5", "green", [ "v0" ] ],
+    [ "imu1:SDA", "nano:A4", "green", [ "v0" ] ],
+    [ "nano:5V", "sd1:VCC", "red", [ "v9.6", "h-316.8", "v-105.6" ] ],
+    [ "nano:9", "servo2:PWM", "green", [ "v-19.2", "h-297.6", "v86.4" ] ],
+    [ "servo1:PWM", "nano:10", "green", [ "h-28.8", "v-153.4", "h278.4" ] ],
+    [ "nano:11", "sd1:DI", "#8f4814", [ "v-28.8", "h-230.4", "v-9.6" ] ],
+    [ "nano:12", "sd1:DO", "#8f4814", [ "v0", "h-201.6", "v-48" ] ],
+    [ "sd1:GND", "nano:GND.2", "black", [ "h124.8", "v38.51", "h163.2" ] ],
+    [ "nano:13", "sd1:SCK", "green", [ "v0", "h-192", "v-124.8" ] ],
+    [ "nano:5", "sd1:CS", "green", [ "v9.6", "h-297.6", "v-48" ] ]
+  ],
+  "dependencies": {}
+}
