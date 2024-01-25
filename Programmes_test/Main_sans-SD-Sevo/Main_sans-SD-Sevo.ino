@@ -43,7 +43,7 @@ unsigned long count_ms;
 unsigned long count_s;
 
 sensors_event_t acc, gyr, temp;
-float pre, alt
+float pre, alt;
 
 /*  Initialisation  */
 
@@ -193,21 +193,23 @@ void Transfert_Info(unsigned long nb_ms){
 
 
     Serial.print("Acceleration X: ");
-    Serial.print(a.acceleration.x);
+    Serial.print(acc.acceleration.x);
     Serial.print(", Y: ");
-    Serial.print(a.acceleration.y);
+    Serial.print(acc.acceleration.y);
     Serial.print(", Z: ");
-    Serial.print(a.acceleration.z);
+    Serial.print(acc.acceleration.z);
     Serial.println(" m/s^2");
 
     Serial.print("Rotation X: ");
-    Serial.print(g.gyro.x);
+    Serial.print(gyr.gyro.x);
     Serial.print(", Y: ");
-    Serial.print(g.gyro.y);
+    Serial.print(gyr.gyro.y);
     Serial.print(", Z: ");
-    Serial.print(g.gyro.z);
+    Serial.print(gyr.gyro.z);
     Serial.println(" rad/s");
+    Serial.print(temp.temperature)
     Serial.println(" degC");
+
 
     Serial.println();
 

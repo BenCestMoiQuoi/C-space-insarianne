@@ -94,20 +94,23 @@ void Transfert_Info(unsigned long nb_ms){
 
 
     Serial.print("Acceleration X: ");myFile.print("Acceleration X: ");
-    Serial.print(a.acceleration.x);myFile.print(a.acceleration.x);
+    Serial.print(acc.acceleration.x);myFile.print(acc.acceleration.x);
     Serial.print(", Y: ");myFile.print(", Y: ");
-    Serial.print(a.acceleration.y);myFile.print(a.acceleration.y);
+    Serial.print(acc.acceleration.y);myFile.print(acc.acceleration.y);
     Serial.print(", Z: ");myFile.print(", Z: ");
-    Serial.print(a.acceleration.z);myFile.print(a.acceleration.z);
+    Serial.print(acc.acceleration.z);myFile.print(acc.acceleration.z);
     Serial.println(" m/s^2");myFile.println(" m/s^2");
 
     Serial.print("Rotation X: ");myFile.print("Rotation X: ");
-    Serial.print(g.gyro.x);myFile.print(g.gyro.x);
+    Serial.print(gyr.gyro.x);myFile.print(gyr.gyro.x);
     Serial.print(", Y: ");myFile.print(", Y: ");
-    Serial.print(g.gyro.y);myFile.print(g.gyro.y);
+    Serial.print(gyr.gyro.y);myFile.print(gyr.gyro.y);
     Serial.print(", Z: ");myFile.print(", Z: ");
-    Serial.print(g.gyro.z);myFile.print(g.gyro.z);
+    Serial.print(gyr.gyro.z);myFile.print(gyr.gyro.z);
     Serial.println(" rad/s");myFile.println(" rad/s");
+
+    Serial.print("Température: ");myFile.print("Température: ");
+    Serial.print(temp.temperature);myFile.print(temp.temperature);
     Serial.println(" degC");myFile.println(" degC");
 
     Serial.println();myFile.println();

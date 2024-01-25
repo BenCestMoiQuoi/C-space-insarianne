@@ -15,7 +15,7 @@ unsigned long timer_info;
 unsigned long count_ms;
 unsigned long count_s;
 
-float pre, alt
+float pre, alt;
 
 void Init_Timer(){
   /*

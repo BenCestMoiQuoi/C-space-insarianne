@@ -92,6 +92,10 @@ void Transfert_Info(unsigned long nb_ms){
     Serial.print(gyr.gyro.z);
     Serial.println(" rad/s");
 
+    Serial.print("Température: ");
+    Serial.print(temp.temperature);
+    Serial.println(" °C");
+
     Serial.println();
   }
 }
