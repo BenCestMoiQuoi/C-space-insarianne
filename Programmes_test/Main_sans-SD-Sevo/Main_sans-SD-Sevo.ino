@@ -207,7 +207,7 @@ void Transfert_Info(unsigned long nb_ms){
     Serial.print(", Z: ");
     Serial.print(gyr.gyro.z);
     Serial.println(" rad/s");
-    Serial.print(temp.temperature)
+    Serial.print(temp.temperature);
     Serial.println(" degC");
 
 

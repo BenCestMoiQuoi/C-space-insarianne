@@ -5,7 +5,9 @@
 #define _BV(n) (1<<n)
 
 File myFile;
-#define SD_pin 5
+#define SD_pin 10
+
+#define LED 7
 
 
 unsigned long timer_ms;
@@ -56,7 +58,7 @@ void Init_Sensor(){
        1 capteur de température
   */
   SD.begin(SD_pin);
-  myFile = SD.open("test.txt", FILE_WRITE);
+  pinMode(LED, OUTPUT);
 }
 
 void Transfert_Info(unsigned long nb_ms){
@@ -75,19 +77,27 @@ void Transfert_Info(unsigned long nb_ms){
   }
 
   if (timer_info >= nb_ms){
+    digitalWrite(LED, HIGH);
     timer_info = 0;
+    myFile = SD.open("test.txt", FILE_WRITE);
 
     myFile.print(count_s);
     myFile.print(":");
     myFile.println(count_ms);
 
+    myFile.close();
+    digitalWrite(LED, LOW);
+    Serial.println("Ecrit");
   }
 }
 
 void setup() {
   Init_Timer();
   Init_Sensor();
-  
+  Serial.begin(9600);
+
+  Serial.println("Initialisation Finis");
+
   myFile.println("Initialisation Finis");
   count_ms = 0;
   count_s = 0;
