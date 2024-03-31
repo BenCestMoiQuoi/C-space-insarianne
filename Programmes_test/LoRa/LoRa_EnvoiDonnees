@@ -6,7 +6,7 @@
 
 #define _BV(n) (1<<n)
 #define PRESSION_MER 100810
-//Coco, bienvenue dans cette chimère de ton programme Essai_Capteurs et de l'exemple LoRaSender
+
 int counter = 0;
 
 Adafruit_BMP085 bmp; // Adress 0x77
@@ -19,18 +19,26 @@ unsigned long count_s;
 
 float pre, alt;
 sensors_event_t acc, gyr, temp;
-//J'ai tout mis au début, les librairies LoRa et toutes ces bêtises (en priant que ça définisse tout au départ on va pas se mentir)
 
 void setup() {
   Serial.begin(9600);
+  
+  Init_Timer();
+  Init_Sensor();
+  
+  Serial.println("Initialisation Finie");
+  count_ms = 0;
+  count_s = 0;
+
   while (!Serial);
 
-  Serial.println("LoRa Sender");
+  Serial.println("LoRa Envoyeur sans SD");
 
   if (!LoRa.begin(868E6)) {
-    Serial.println("Starting LoRa failed!");
+    Serial.println("Echec du lancement du module LoRa");
     while (1);
   }
+
 }
 
 void Init_Timer(){
@@ -67,7 +75,7 @@ void Init_Timer(){
 
 void Init_Sensor(){
   /* 
-  Initialisation de la partie capteur
+  Initialisation de la partie capteur + Carte SD
   */
 
   mpu.begin();
@@ -104,8 +112,8 @@ void Transfert_Info(unsigned long nb_ms){
     Serial.print(acc.acceleration.x);
     Serial.print(", Y: ");
     Serial.print(acc.acceleration.y);
-    Serial.print(", Z: ");
-    Serial.print(acc.acceleration.z);
+    Serial.print(", Z: ");myFile.print(", Z: ");
+    Serial.print(acc.acceleration.z - 9.81);
     Serial.println(" m/s^2");
 
     Serial.print("Rotation X: ");
@@ -116,16 +124,18 @@ void Transfert_Info(unsigned long nb_ms){
     Serial.print(gyr.gyro.z);
     Serial.println(" rad/s");
 
+    Serial.println();
+
     Serial.print("Température : ");
     Serial.print(temp.temperature);
     Serial.println(" Deg °C");
 
     Serial.println();
 
-    Serial.print("Pressure = ");
+    Serial.print("Pression : ");
     Serial.print(pre);
     Serial.println(" Pa");
-    Serial.print("Altitude = ");
+    Serial.print("Altitude : ");
     Serial.print(alt);
     Serial.println(" m");
 
@@ -133,50 +143,25 @@ void Transfert_Info(unsigned long nb_ms){
   }
 }
 
-void setup() {
-  Serial.begin(9600);
-
-  Init_Timer();
-  Init_Sensor();
-  
-  Serial.println("Initialisation Finie");
-  count_ms = 0;
-  count_s = 0;
-}
-
-void loop() {
-  Transfert_Info(200); //si on veut tout faire d'un coup, je pense qu'il faut enregistrer les infos sur la carte SD depuis cette loop
-}
-
-ISR(TIMER0_COMPA_vect){    //This  is the interrupt request
-  timer_ms++;
-  count_ms++;
-  timer_info++;
-}
-
-void setup() {
-  Serial.begin(9600);
-  while (!Serial);
-
-  Serial.println("Envoyeur LoRa");
-
-  if (!LoRa.begin(868E6)) {
-    Serial.println("LoRa n'a pas demarre");
-    while (1);
-  }
-}
-
-void loop() {
-  Serial.print("Donnée: ");
+void loop() { //si on veut tout faire d'un coup, je pense qu'il faut enregistrer les infos sur la carte SD depuis cette loop
+  Serial.print("Donnée n°");
   Serial.println(counter);
-
 
   // envoi des paquets de données: je mets la transfer_info dedans, ces infos sont envoyées par le module LoRa
   LoRa.beginPacket();
   Transfert_Info(200);
   LoRa.endPacket();
 
+  Serial.print("Infos:");
+  Transfert_Info(200);
+
   counter++;
 
   delay(200);
+}
+
+ISR(TIMER0_COMPA_vect){    //This  is the interrupt request
+  timer_ms++;
+  count_ms++;
+  timer_info++;
 }
