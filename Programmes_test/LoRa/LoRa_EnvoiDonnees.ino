@@ -100,48 +100,87 @@ void Transfert_Info(unsigned long nb_ms){
   if (timer_info >= nb_ms){
     timer_info = 0;
 
-    Serial.print(count_s);LoRa.print(count_s);
-    Serial.print(":");LoRa.print(":");
-    Serial.println(count_ms);LoRa.println(count_ms);
-    Serial.print("Donnée n°");LoRa.print("Donnée n°");
-    Serial.println(counter);LoRa.println(counter);
+    Serial.print(count_s);
+    Serial.print(":");
+    Serial.println(count_ms);
+    Serial.print("Donnée n°");
+    Serial.println(counter);
     
     mpu.getEvent(&acc, &gyr, &temp);
     pre = bmp.readPressure();
     alt = bmp.readAltitude(PRESSION_MER);
 
-    Serial.print("Acceleration X: ");LoRa.print("Acceleration X: ");
-    Serial.print(acc.acceleration.x);LoRa.print(acc.acceleration.x);
-    Serial.print(", Y: ");LoRa.print(", Y: ");
-    Serial.print(acc.acceleration.y);LoRa.print(acc.acceleration.y);
-    Serial.print(", Z: ");LoRa.print(", Z: ");
-    Serial.print(acc.acceleration.z - 9.81);LoRa.print(acc.acceleration.z - 9.81);
-    Serial.println(" m/s^2");LoRa.println(" m/s^2");
+    Serial.print("Acceleration X: ");
+    Serial.print(acc.acceleration.x);
+    Serial.print(", Y: ");
+    Serial.print(acc.acceleration.y);
+    Serial.print(", Z: ");
+    Serial.print(acc.acceleration.z - 9.81);
+    Serial.println(" m/s^2");
 
-    Serial.print("Rotation X: ");LoRa.print("Rotation X: ");
-    Serial.print(gyr.gyro.x);LoRa.print(gyr.gyro.x);
-    Serial.print(", Y: ");LoRa.print(", Y: ");
-    Serial.print(gyr.gyro.y);LoRa.print(gyr.gyro.y);
-    Serial.print(", Z: ");LoRa.print(", Z: ");
-    Serial.print(gyr.gyro.z);LoRa.print(gyr.gyro.z);
-    Serial.println(" rad/s");LoRa.println(" rad/s");
+    Serial.print("Rotation X: ");
+    Serial.print(gyr.gyro.x);
+    Serial.print(", Y: ");
+    Serial.print(gyr.gyro.y);
+    Serial.print(", Z: ");
+    Serial.print(gyr.gyro.z);
+    Serial.println(" rad/s");
 
-    Serial.println();LoRa.println();
+    Serial.println();
 
-    Serial.print("Température : ");LoRa.print("Température : ");
-    Serial.print(temp.temperature);LoRa.print(temp.temperature);
-    Serial.println(" Deg °C");LoRa.println(" Deg °C");
+    Serial.print("Température : ");
+    Serial.print(temp.temperature);
+    Serial.println(" Deg °C");
 
-    Serial.println();LoRa.println();
+    Serial.println();
 
-    Serial.print("Pression : ");LoRa.print("Pression : ");
-    Serial.print(pre);LoRa.print(pre);
-    Serial.println(" Pa");LoRa.println(" Pa");
-    Serial.print("Altitude : ");LoRa.print("Altitude : ");
-    Serial.print(alt);LoRa.print(alt);
-    Serial.println(" m");LoRa.println(" m");
+    Serial.print("Pression : ");
+    Serial.print(pre);
+    Serial.println(" Pa");
+    Serial.print("Altitude : ");
+    Serial.print(alt);
+    Serial.println(" m");
 
-    Serial.println();LoRa.println();
+    Serial.println();
+//LoRa
+    LoRa.print(count_s);
+    LoRa.print(":");
+    LoRa.println(count_ms);
+    LoRa.print("Donnée n°");
+    LoRa.println(counter);
+
+    LoRa.print("Acceleration X: ");
+    LoRa.print(acc.acceleration.x);
+    LoRa.print(", Y: ");
+    LoRa.print(acc.acceleration.y);
+    LoRa.print(", Z: ");
+    LoRa.print(acc.acceleration.z - 9.81);
+    LoRa.println(" m/s^2");
+
+    LoRa.print("Rotation X: ");
+    LoRa.print(gyr.gyro.x);
+    LoRa.print(", Y: ");
+    LoRa.print(gyr.gyro.y);
+    LoRa.print(", Z: ");
+    LoRa.print(gyr.gyro.z);
+    LoRa.println(" rad/s");
+
+    LoRa.println();
+
+    LoRa.print("Température : ");
+    LoRa.print(temp.temperature);
+    LoRa.println(" Deg °C");
+
+    LoRa.println();
+
+    LoRa.print("Pression : ");
+    LoRa.print(pre);
+    LoRa.println(" Pa");
+    LoRa.print("Altitude : ");
+    LoRa.print(alt);
+    LoRa.println(" m");
+
+    LoRa.println();
 
     counter++;
   }
@@ -149,7 +188,9 @@ void Transfert_Info(unsigned long nb_ms){
 }
 
 void loop() {
+
   Transfert_Info(1000);
+
 }
 
 ISR(TIMER0_COMPA_vect){    //This  is the interrupt request
