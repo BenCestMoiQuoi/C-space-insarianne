@@ -4,6 +4,7 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BMP085.h>
 
+
 #define _BV(n) (1<<n)
 #define PRESSION_MER 100810
 
@@ -32,10 +33,10 @@ void setup() {
 
   while (!Serial);
 
-  Serial.println("LoRa Envoyeur sans SD");
+  Serial.println("LoRa Sender");
 
   if (!LoRa.begin(868E6)) {
-    Serial.println("Echec du lancement du module LoRa");
+    Serial.println("Starting LoRa failed!");
     while (1);
   }
 
@@ -74,9 +75,6 @@ void Init_Timer(){
 }
 
 void Init_Sensor(){
-  /* 
-  Initialisation de la partie capteur + Carte SD
-  */
 
   mpu.begin();
   bmp.begin();
@@ -92,6 +90,8 @@ void Transfert_Info(unsigned long nb_ms){
   Input : 
     unsigned long nb_ms -> Nombre de millis pour l'écriture
   */
+  LoRa.beginPacket();
+
   if (count_ms >= 1000){
     count_ms-=1000;
     count_s++;
@@ -100,64 +100,56 @@ void Transfert_Info(unsigned long nb_ms){
   if (timer_info >= nb_ms){
     timer_info = 0;
 
-    Serial.print(count_s);
-    Serial.print(":");
-    Serial.println(count_ms);
+    Serial.print(count_s);LoRa.print(count_s);
+    Serial.print(":");LoRa.print(":");
+    Serial.println(count_ms);LoRa.println(count_ms);
+    Serial.print("Donnée n°");LoRa.print("Donnée n°");
+    Serial.println(counter);LoRa.println(counter);
     
     mpu.getEvent(&acc, &gyr, &temp);
     pre = bmp.readPressure();
     alt = bmp.readAltitude(PRESSION_MER);
 
-    Serial.print("Acceleration X: ");
-    Serial.print(acc.acceleration.x);
-    Serial.print(", Y: ");
-    Serial.print(acc.acceleration.y);
-    Serial.print(", Z: ");myFile.print(", Z: ");
-    Serial.print(acc.acceleration.z - 9.81);
-    Serial.println(" m/s^2");
+    Serial.print("Acceleration X: ");LoRa.print("Acceleration X: ");
+    Serial.print(acc.acceleration.x);LoRa.print(acc.acceleration.x);
+    Serial.print(", Y: ");LoRa.print(", Y: ");
+    Serial.print(acc.acceleration.y);LoRa.print(acc.acceleration.y);
+    Serial.print(", Z: ");LoRa.print(", Z: ");
+    Serial.print(acc.acceleration.z - 9.81);LoRa.print(acc.acceleration.z - 9.81);
+    Serial.println(" m/s^2");LoRa.println(" m/s^2");
 
-    Serial.print("Rotation X: ");
-    Serial.print(gyr.gyro.x);
-    Serial.print(", Y: ");
-    Serial.print(gyr.gyro.y);
-    Serial.print(", Z: ");
-    Serial.print(gyr.gyro.z);
-    Serial.println(" rad/s");
+    Serial.print("Rotation X: ");LoRa.print("Rotation X: ");
+    Serial.print(gyr.gyro.x);LoRa.print(gyr.gyro.x);
+    Serial.print(", Y: ");LoRa.print(", Y: ");
+    Serial.print(gyr.gyro.y);LoRa.print(gyr.gyro.y);
+    Serial.print(", Z: ");LoRa.print(", Z: ");
+    Serial.print(gyr.gyro.z);LoRa.print(gyr.gyro.z);
+    Serial.println(" rad/s");LoRa.println(" rad/s");
 
-    Serial.println();
+    Serial.println();LoRa.println();
 
-    Serial.print("Température : ");
-    Serial.print(temp.temperature);
-    Serial.println(" Deg °C");
+    Serial.print("Température : ");LoRa.print("Température : ");
+    Serial.print(temp.temperature);LoRa.print(temp.temperature);
+    Serial.println(" Deg °C");LoRa.println(" Deg °C");
 
-    Serial.println();
+    Serial.println();LoRa.println();
 
-    Serial.print("Pression : ");
-    Serial.print(pre);
-    Serial.println(" Pa");
-    Serial.print("Altitude : ");
-    Serial.print(alt);
-    Serial.println(" m");
+    Serial.print("Pression : ");LoRa.print("Pression : ");
+    Serial.print(pre);LoRa.print(pre);
+    Serial.println(" Pa");LoRa.println(" Pa");
+    Serial.print("Altitude : ");LoRa.print("Altitude : ");
+    Serial.print(alt);LoRa.print(alt);
+    Serial.println(" m");LoRa.println(" m");
 
-    Serial.println();
+    Serial.println();LoRa.println();
+
+    counter++;
   }
+  LoRa.endPacket();
 }
 
-void loop() { //si on veut tout faire d'un coup, je pense qu'il faut enregistrer les infos sur la carte SD depuis cette loop
-  Serial.print("Donnée n°");
-  Serial.println(counter);
-
-  // envoi des paquets de données: je mets la transfer_info dedans, ces infos sont envoyées par le module LoRa
-  LoRa.beginPacket();
-  Transfert_Info(200);
-  LoRa.endPacket();
-
-  Serial.print("Infos:");
-  Transfert_Info(200);
-
-  counter++;
-
-  delay(200);
+void loop() {
+  Transfert_Info(1000);
 }
 
 ISR(TIMER0_COMPA_vect){    //This  is the interrupt request

@@ -7,8 +7,9 @@
 
 #define _BV(n) (1<<n)
 #define PRESSION_MER 100810
-File myFile;
-#define SD_pin 5 //Ou une autre pin pas utilisée, j'ai mis la même que dans la main pour l'instant
+
+File myfile;
+#define SD_pin 5
 
 int counter = 0;
 
@@ -35,10 +36,10 @@ void setup() {
 
   while (!Serial);
 
-  Serial.println("LoRa Envoyeur");
+  Serial.println("LoRa Sender");
 
   if (!LoRa.begin(868E6)) {
-    Serial.println("Echec du lancement du LoRa");
+    Serial.println("Starting LoRa failed!");
     while (1);
   }
 
@@ -77,18 +78,8 @@ void Init_Timer(){
 }
 
 void Init_Sensor(){
-  /* 
-  Initialisation de la partie capteur + Carte SD
-  */
-
-  SD.begin(SD_pin);
-  myFile = SD.open("Test_EDSD.txt", FILE_WRITE);
 
   mpu.begin();
-  mpu.setAccelerometerRange(MPU6050_RANGE_8_G);
-  mpu.setGyroRange(MPU6050_RANGE_500_DEG);
-  mpu.setFilterBandwidth(MPU6050_BAND_21_HZ);
-
   bmp.begin();
 }
 
@@ -102,6 +93,8 @@ void Transfert_Info(unsigned long nb_ms){
   Input : 
     unsigned long nb_ms -> Nombre de millis pour l'écriture
   */
+  LoRa.beginPacket();
+
   if (count_ms >= 1000){
     count_ms-=1000;
     count_s++;
@@ -110,64 +103,58 @@ void Transfert_Info(unsigned long nb_ms){
   if (timer_info >= nb_ms){
     timer_info = 0;
 
-    Serial.print(count_s);
-    Serial.print(":");
-    Serial.println(count_ms);
+    Serial.print(count_s);myfile.print(count_s);LoRa.print(count_s);
+    Serial.print(":");myfile.print(":");LoRa.print(":");
+    Serial.println(count_ms);myfile.print(count_ms);LoRa.println(count_ms);
+    Serial.print("Donnée n°");myfile.print("Donnée n°");LoRa.print("Donnée n°");
+    Serial.println(counter);myfile.print(counter);LoRa.println(counter);
     
     mpu.getEvent(&acc, &gyr, &temp);
     pre = bmp.readPressure();
     alt = bmp.readAltitude(PRESSION_MER);
 
-    Serial.print("Acceleration X: ");myFile.print("Acceleration X: ");
-    Serial.print(acc.acceleration.x);myFile.print(acc.acceleration.x);
-    Serial.print(", Y: ");myFile.print(", Y: ");
-    Serial.print(acc.acceleration.y);myFile.print(acc.acceleration.y);
-    Serial.print(", Z: ");myFile.print(", Z: ");
-    Serial.print(acc.acceleration.z - 9.81);myFile.print(acc.acceleration.z - 9.81);
-    Serial.println(" m/s^2");myFile.println(" m/s^2");
+    Serial.print("Acceleration X: ");myfile.print("Acceleration X: ");LoRa.print("Acceleration X: ");
+    Serial.print(acc.acceleration.x);myfile.print(acc.acceleration.x);LoRa.print(acc.acceleration.x);
+    Serial.print(", Y: ");myfile.print(", Y:");LoRa.print(", Y:");
+    Serial.print(acc.acceleration.y);myfile.print(acc.acceleration.y);LoRa.print(acc.acceleration.y);
+    Serial.print(", Z: ");myfile.print(", Z: ");LoRa.print(", Z:");
+    Serial.print(acc.acceleration.z - 9.81);myfile.print(acc.acceleration.z);LoRa.print(acc.acceleration.z);
+    Serial.println(" m/s^2");myfile.print(" m/s^2");LoRa.println(" m/s^2");
 
-    Serial.print("Rotation X: ");myFile.print("Rotation X: ");
-    Serial.print(gyr.gyro.x);myFile.print(gyr.gyro.x);
-    Serial.print(", Y: ");myFile.print(", Y: ");
-    Serial.print(gyr.gyro.y);myFile.print(gyr.gyro.y);
-    Serial.print(", Z: ");myFile.print(", Z: ");
-    Serial.print(gyr.gyro.z);myFile.print(gyr.gyro.z);
-    Serial.println(" rad/s");myFile.print(" rad/s");
+    Serial.print("Rotation X: ");myfile.print("Rotation X: ");LoRa.print("Rotation X: ");
+    Serial.print(gyr.gyro.x);myfile.print(gyr.gyro.x);LoRa.print(gyr.gyro.x);
+    Serial.print(", Y: ");myfile.print(", Y: ");LoRa.print(", Y:");
+    Serial.print(gyr.gyro.y);myfile.print(gyr.gyro.y);LoRa.print(gyr.gyro.y);
+    Serial.print(", Z: ");myfile.print(", Z: ");LoRa.print(", z:");
+    Serial.print(gyr.gyro.z);myfile.print(gyr.gyro.z);LoRa.print(gyr.gyro.z);
+    Serial.println(" rad/s");myfile.print(" rad/s");LoRa.println(" rad/s");
 
-    Serial.println();
+    Serial.println();LoRa.println();
 
-    Serial.print("Température : ");myFile.print("Températue : ");
-    Serial.print(temp.temperature);myFile.print(temp.temperature);
-    Serial.println(" Deg °C");myFile.print(" Deg °C");
+    Serial.print("Température : ");myfile.print("Température : ");LoRa.print("Température : ");
+    Serial.print(temp.temperature);myfile.print(temp.temperature);LoRa.print(temp.temperature);
+    Serial.println(" Deg °C");myfile.print(" Deg °C");LoRa.println(" Deg °C");
 
-    Serial.println();
+    Serial.println();LoRa.println();
 
-    Serial.print("Pression : ");myFile.print("Pression : ");
-    Serial.print(pre);myFile.print(pre);
-    Serial.println(" Pa");myFile.print(" Pa");
-    Serial.print("Altitude : ");myFile.print("Altitude : ");
-    Serial.print(alt);myFile.print(alt);
-    Serial.println(" m");myFile.print(" m");
+    Serial.print("Pression : ");myfile.print("Pression : ");LoRa.print("Pression : ");
+    Serial.print(pre);myfile.print(pre);LoRa.print(pre);
+    Serial.println(" Pa");myfile.print(" Pa");LoRa.println(" Pa");
+    Serial.print("Altitude : ");myfile.print("Altitude : ");LoRa.print("Altitude: ");
+    Serial.print(alt);myfile.print(alt);LoRa.print(alt);
+    Serial.println(" m");myfile.println(" m");LoRa.println(" m");
 
-    Serial.println();
+    Serial.println();LoRa.println();
+
+    counter++;
   }
+  LoRa.endPacket();
 }
 
-void loop() { //si on veut tout faire d'un coup, je pense qu'il faut enregistrer les infos sur la carte SD depuis cette loop
-  Serial.print("Donnée n°");
-  Serial.println(counter);
+void loop() {
 
-  // envoi des paquets de données: je mets la transfer_info dedans, ces infos sont envoyées par le module LoRa
-  LoRa.beginPacket();
-  Transfert_Info(200);
-  LoRa.endPacket();
+  Transfert_Info(1000);
 
-  Serial.print("Infos:");
-  Transfert_Info(200);
-
-  counter++;
-
-  delay(200);
 }
 
 ISR(TIMER0_COMPA_vect){    //This  is the interrupt request
