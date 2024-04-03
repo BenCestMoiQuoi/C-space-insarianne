@@ -1,0 +1,9 @@
+pyvisa
+pyqtgraph
+PyQt6
+numpy
+datetime
+matplotlib
+importlib
+serial
+keyboard
