@@ -93,7 +93,6 @@ void Transfert_Info(unsigned long nb_ms){
   Input : 
     unsigned long nb_ms -> Nombre de millis pour l'écriture
   */
-  LoRa.beginPacket();
 
   if (count_ms >= 1000){
     count_ms-=1000;
@@ -181,6 +180,9 @@ void Transfert_Info(unsigned long nb_ms){
     myFile.print(" m");
 
 //LoRa
+
+    LoRa.beginPacket();
+
     LoRa.print(count_s);
     LoRa.print(":");
     LoRa.println(count_ms);
@@ -222,7 +224,6 @@ void Transfert_Info(unsigned long nb_ms){
 
     counter++;
   }
-  LoRa.endPacket();
 }
 
 void loop() {
