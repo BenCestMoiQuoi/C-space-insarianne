@@ -94,12 +94,8 @@ void Transfert_Info(unsigned long nb_ms){
     pre = bmp.readPressure();
     alt = bmp.readAltitude(PRESSION_MER);
     
-    
-    //envoi des données sur la carte
-    float packet[] = {acc.acceleration.x,acc.acceleration.y,acc.acceleration.z,gyr.gyro.x,gyr.gyro.y,gyr.gyro.z,temp.temperature,pre,alt};
-    Serial.write((uint8_t*)packet, sizeof(packet));
     //ecriture carte sd
-  dataFile = SD.open(path,O_APPEND | O_WRITE);
+    dataFile = SD.open(path,O_APPEND | O_WRITE);
   if (dataFile) {
     for(int i =0;i<9;i++){
           dataFile.print(packet[i]);
@@ -135,7 +131,6 @@ void setup() {
 }
 
 void loop() {
-  // à faire :  faire en sorte d'attendre le signal du récepteur pour envoyer les infos
   Transfert_Info(200);  
 
 }
