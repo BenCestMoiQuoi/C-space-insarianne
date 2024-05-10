@@ -66,6 +66,14 @@ void Init_Sensor(){
 File dataFile;
 const int chipSelect = 5; // numero pin
 const char path[] = "TEST.tsv";
+const char path2[] = "nb_loop.txt";
+unsigned long nb_ms = 200;
+long nb_loop = 0;
+int writing = 0;
+
+int stop(){
+  return 0;
+}
 
 
 void Transfert_Info(unsigned long nb_ms){
@@ -86,24 +94,36 @@ void Transfert_Info(unsigned long nb_ms){
   if (timer_info >= nb_ms){
     timer_info = 0;
 
-    Serial.print(count_s);
-    Serial.print(":");
-    Serial.println(count_ms);
+  Serial.print(count_s);
+  Serial.print(":");
+  Serial.println(count_ms);
     
-    mpu.getEvent(&acc, &gyr, &temp);
-    pre = bmp.readPressure();
-    alt = bmp.readAltitude(PRESSION_MER);
+  mpu.getEvent(&acc, &gyr, &temp);
+  pre = bmp.readPressure();
+  alt = bmp.readAltitude(PRESSION_MER);
     
+    
+  //envoi des données sur la carte
+  if(writing){
+    float packet[] = {acc.acceleration.x,acc.acceleration.y,acc.acceleration.z,gyr.gyro.x,gyr.gyro.y,gyr.gyro.z,temp.temperature,pre,alt};
     //ecriture carte sd
     dataFile = SD.open(path,O_APPEND | O_WRITE);
-  if (dataFile) {
-    for(int i =0;i<9;i++){
-          dataFile.print(packet[i]);
-          dataFile.print("\t");
+    if (dataFile) {
+      for(int i =0;i<9;i++){
+            dataFile.print(packet[i]);
+            dataFile.print("\t");
+      }
+      dataFile.print("\n");
+      dataFile.close();
+      nb_loop ++;
+      }
+    if(stop()){
+      writing = 0;
+      dataFile = SD.open(path2);
+      dataFile.print(nb_loop);
+      dataFile.close();
     }
-    dataFile.print("\n");
-    dataFile.close();
-    }
+  }
   }
 }
 
@@ -117,6 +137,7 @@ void setup() {
       break;
     }
   dataFile = SD.open(path);
+  dataFile.println(nb_ms);
   dataFile.println("acceleration x\tacceleration y\t acceleration z\trotation x\t rotation y\t rotation z\ttemperature\tpression\taltitude");
   }
 
@@ -131,7 +152,7 @@ void setup() {
 }
 
 void loop() {
-  Transfert_Info(200);  
+  Transfert_Info(nb_ms);  
 
 }
 
