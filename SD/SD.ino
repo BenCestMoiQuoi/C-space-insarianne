@@ -69,7 +69,7 @@ const char path[] = "TEST.tsv";
 const char path2[] = "nb_loop.txt";
 unsigned long nb_ms = 200;
 long nb_loop = 0;
-int writing = 0;
+int writing = 1;
 
 int stop(){
   return 0;
