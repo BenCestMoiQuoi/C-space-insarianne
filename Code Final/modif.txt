@@ -1,0 +1,4 @@
+-changement de la fonction transfert_info pour une table de donnée + création de l'en tête + ajout du moment de la mesure
+-tranfert_info uniquement en vol
+-Carte expérience : plus d'etat sol, la carte s'active à la réception d'un signal de la carte 1
+-un peu de nettoyage pour enlever les fonctions inutiles
