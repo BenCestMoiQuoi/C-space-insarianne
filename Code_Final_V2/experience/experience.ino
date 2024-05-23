@@ -124,10 +124,11 @@ void Transfert_Info(unsigned long nb_ms){
 
   if (timer_info >= nb_ms){
     timer_info = 0;
-    packet = {mpu.accX,mpu.accY,mpu.accZ,mpu.gyroX,mpu.gyroY,mpu.gyroZ,bmp.sealevelpressure,bmp.pressure,bmp.altitude,timer_ms};
+    packet = {mpu.accX,mpu.accY,mpu.accZ,mpu.gyroX,mpu.gyroY,mpu.gyroZ,bmp.sealevelpressure,bmp.pressure,bmp.altitude,timer_ms}; /*Regroupement de toutes les mesure dans un unique tableau*/
     myFile = SD.open(path,FILE_WRITE);
     LoRa.beginPacket();
-    LoRa.println(tete);
+    LoRa.print("\n");/*espacement des données*/
+    LoRa.println(tete); /*Impression de l'en tête pour une meilleure compréhension de l'utilisateur*/
     for(int i = 0;i<10;i++){
       myFile.print(packet[i]);
       myFile.print("\t");
