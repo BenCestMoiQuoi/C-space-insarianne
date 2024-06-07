@@ -149,10 +149,9 @@ void Verif_Sol(){
     Etat_sol = 2;
     write_LED_Sol();
   }
-  if (Etat_sol == 3 && digitalRead(Jack_pin){
+  if (Etat_sol == 3 && digitalRead(Jack_pin)){
     Etat_vol = true;
-    
-    }
+  }
 }
 
 void Ouverture_porte(){
