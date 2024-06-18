@@ -23,6 +23,7 @@ Date : 20/01/2023
 #define Led_pin_sol_2 7
 #define Switch_pin_sol_1 2
 #define Switch_pin_sol_2 3
+#define Opto_pin 1
 
 #define Val_Timer 3000 // 3s ici
 
@@ -53,6 +54,7 @@ void Init_Sol(){
   */
   pinMode(Led_pin_sol_1, OUTPUT);
   pinMode(Led_pin_sol_2, OUTPUT);
+  pinMode(Opto_pin, OUTPUT);
   pinMode(Switch_pin_sol_1, INPUT_PULLUP);
   pinMode(Switch_pin_sol_2, INPUT_PULLUP);
   
@@ -139,6 +141,10 @@ void Ouverture_porte(){
   }
 }
 
+void Emission(){
+  digitalWrite(Opto_pin, HIGH);
+}
+
 void Sol(){
   /*
   Fonction de la fusée lorsqu'elle est au sol.
@@ -166,8 +172,7 @@ void Sol(){
   while (!Etat_vol){
     Verif_Sol();
   }
-  int i = 1;
-  Serial.write((byte*)&i, sizeof(i));/*envoi du signal pour commencer les mesures*/
+  Emission()
 }
 
 void Vol(){
