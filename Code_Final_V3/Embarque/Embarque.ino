@@ -25,6 +25,7 @@ Date : 20/01/2023
 File myFile;
 #define path "text.tsv"
 #define SD_pin 5
+#define Opto_pin 6
 #define tete "Acc_X\tAcc_Y\tAcc_Z\tRot_X\tRot_Y\tRot_Z\tTemp\tPre\tAlt\tTemps"
 MPU6050 mpu;
 //BMP085 bmp;
@@ -134,15 +135,24 @@ void Transfert_Info(unsigned long nb_ms){
   }
 }
 
+int Reception(){
+  if (digitalRead(Opto_pin)==HIGH){
+    return 1;
+  }
+  else{
+    return 0;
+  }
+}
+
 void setup() {
   Serial.begin(9600);
-
+  pinMode(Opto_pin,INPUT);
   Init_Timer();
   Init_Sensor();
   count_ms = 0;
   count_s = 0;
   while(1){
-    if(Serial.available() >= sizeof(int)){
+    if(Reception()){
         Serial.println("Signal reçu");
         break;
     }
