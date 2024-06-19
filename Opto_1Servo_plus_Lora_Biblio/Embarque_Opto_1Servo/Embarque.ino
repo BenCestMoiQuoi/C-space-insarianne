@@ -146,7 +146,7 @@ int Reception(){
 
 void setup() {
   Serial.begin(9600);
-  pinMode(Opto_pin,INPUT);
+  pinMode(Opto_pin,INPUT_PULLUP);
   Init_Timer();
   Init_Sensor();
   count_ms = 0;
