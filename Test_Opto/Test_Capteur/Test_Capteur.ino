@@ -10,6 +10,6 @@ void loop(){
         Serial.println("LED allumee");
     }
     else{
-        Serial.println("LED eteinte")
+        Serial.println("LED eteinte");
     }
 }
