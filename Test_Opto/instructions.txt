@@ -1,0 +1,8 @@
+Branchements à faire (sur le modele du wokwi) :
+sur la carte Test_LED : brancher pin 1 de l'opto sur TX1 et la pin 2 sur le Gnd
+    brancher la LED_1 et le switch_1 du wokwi
+sur la carte Test_2 : brancher la pin 6 de l'opto sur D5 et la pin 5 sur 5V
+    brancher aussi le cable USB connecte a la console
+
+Si l'opto est allumé, alors la LED_1 est sensée être allumé
+la console indiquera si le signal est recu ou non
