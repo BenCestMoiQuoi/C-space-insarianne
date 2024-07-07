@@ -1,3 +1,12 @@
+/*
+Programme Arduino
+Nom : Sol.ino
+Auteur : Roche Corentin (@BenCestMoiQuoi)
+         Léo-Paul You (@Lyouu)
+Version : 1
+Date : 07/07/2024
+*/
+
 #include <I2C_Insarianne.h>
 
 #define frequence 868E6
@@ -5,20 +14,22 @@
 
 #define Vitesse_Serial 9600
 
+LoRa lora;
+
 void setup() {
   Serial.begin(Vitesse_Serial);
   while(!Serial);
 
 
-  LoRa.begin(frequence, LORA_pin);
-  Serial.write("Init completed")
+  lora.begin(frequence, LORA_pin);
+  Serial.write("Init completed");
 }
 
 void loop() {
-  int packetSize = LoRa.parsePacket();
+  int packetSize = lora.parsePacket();
   if(packetSize) {
-    while(LoRa.available()) {
-      Serial.write((char)LoRa.read());
+    while(lora.available()) {
+      Serial.write((char)lora.read());
     }
   }
 }
