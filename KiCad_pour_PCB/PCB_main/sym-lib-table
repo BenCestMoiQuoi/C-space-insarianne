@@ -1,4 +1,0 @@
-(sym_lib_table
-  (version 7)
-  (lib (name "Lib_Perso")(type "KiCad")(uri "${KIPRJMOD}/Lib_Perso.kicad_sym")(options "")(descr ""))
-)
