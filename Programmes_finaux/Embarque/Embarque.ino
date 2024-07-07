@@ -111,7 +111,7 @@ void Verif_Sol(){
   Fonction qui permet de gérer entièrement l'état d'avancement de la fusée
   lorsqu'elle est au sol (Etat_sol de 1 à 3). 
   */
-  if(digitalRead(Optocoupleur_Pin)==HIGH) Etat_Vol = true;
+  if(digitalRead(Optocoupleur_Pin)==HIGH) Etat_vol = true;
 }
 
 void Transfert_Info(unsigned long nb_ms){
