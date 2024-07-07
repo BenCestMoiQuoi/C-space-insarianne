@@ -2,7 +2,7 @@
 Programme Arduino
 Nom : Autonome.ino
 Auteur : Roche Corentin (@BenCestMoiQuoi)
-         Léopold You (@Lyouu)
+Léo-Paul You (@Lyouu)
 Version : 1
 Date : 07/07/2024
 */
@@ -19,7 +19,7 @@ Date : 07/07/2024
 #define Led_pin_sol_2 7
 #define Switch_pin_sol_1 2
 #define Switch_pin_sol_2 3
-#define Octocoupleur_pin 8
+#define Optocoupleur_pin 8
 
 #define Val_Timer 3000 // 3s ici
 
@@ -50,9 +50,9 @@ void Init_Sol(){
   pinMode(Switch_pin_sol_2, INPUT_PULLUP);
   
   pinMode(Jack_pin, INPUT_PULLUP);
-  pinMode(Octocoupleur_pin, OUTPUT);
+  pinMode(Optocoupleur_pin, OUTPUT);
 
-  digitalWrite(Octocoupleur_pin, LOW);
+  digitalWrite(Optocoupleur_pin, LOW);
   Etat_sol = 0;
   write_LED_Sol();
 }

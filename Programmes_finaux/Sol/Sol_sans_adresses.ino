@@ -16,8 +16,8 @@ void setup() {
 
 void loop() {
   // recherche d'un signal
-  int packetSize = LoRa.parsePacket();
-  if (packetSize) {
+  int paquets = LoRa.parsePacket();
+  if (paquets) {
     // signal de données reçu
     Serial.print("Données reçues :");
 

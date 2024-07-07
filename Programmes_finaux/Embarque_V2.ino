@@ -5,15 +5,14 @@
 #include <Wire.h>
 #include <SPI.h>
 //#include <SD.h>
+
 #define frequence 915E6 //fréquence séléctionnée
 #define _BV(n) (1<<n)
 
 #define PRESSION_MER 101325
 #define ALTITUDE_BASE 85
 
-
 #define Val_Timer 3000 // 3s ici
-
 
 //File myFile;
 //#define path "text.tsv"
@@ -112,6 +111,7 @@ void Transfert_Info(unsigned long nb_ms){
     timer_info = 0;
     packet = {mpu.accX,mpu.accY,mpu.accZ,mpu.gyroX,mpu.gyroY,mpu.gyroZ,mpu.temperature,bmp.readPressure(),bmp.readAltitude(101500),timer_ms}; /*Regroupement de toutes les mesure dans un unique tableau*/
     //myFile = SD.open(path,FILE_WRITE);
+    
     LoRa.beginPacket();
     LoRa.print("\n");/*espacement des données*/
     LoRa.println(tete); /*Impression de l'en tête pour une meilleure compréhension de l'utilisateur*/
