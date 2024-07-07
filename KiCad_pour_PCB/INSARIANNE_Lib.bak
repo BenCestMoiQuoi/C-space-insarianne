@@ -2253,24 +2253,6 @@
 		)
 		(symbol "Octocoupleur_1_1"
 			(pin bidirectional line
-				(at 5.08 6.35 0)
-				(length 2.54)
-				(name "GND_1"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number ""
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-			)
-			(pin bidirectional line
 				(at 5.08 3.81 0)
 				(length 2.54)
 				(name "In_1"
@@ -2281,6 +2263,24 @@
 					)
 				)
 				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin bidirectional line
+				(at 5.08 6.35 0)
+				(length 2.54)
+				(name "GND_1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
 					(effects
 						(font
 							(size 1.27 1.27)

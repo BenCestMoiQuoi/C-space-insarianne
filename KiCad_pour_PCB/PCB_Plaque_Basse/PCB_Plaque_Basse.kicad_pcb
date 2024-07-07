@@ -135,7 +135,7 @@
 		(descr "Through hole straight pin header, 1x02, 2.54mm pitch, single row")
 		(tags "Through hole pin header THT 1x02 2.54mm single row")
 		(property "Reference" "Inter_Pile1"
-			(at 0 -2.725 360)
+			(at 0 -2.725 0)
 			(layer "F.SilkS")
 			(uuid "c242f72f-32b5-47bf-9a13-61d7a738df2a")
 			(effects
@@ -146,7 +146,7 @@
 			)
 		)
 		(property "Value" "~"
-			(at 0 4.87 360)
+			(at 0 4.87 0)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "99a41e4e-9132-451c-93d8-983c01544644")
@@ -2651,6 +2651,42 @@
 		(layer "User.2")
 		(uuid "873bf816-7606-4322-b6e3-0762409fb433")
 	)
+	(gr_text "2023/2024\n"
+		(at 168 88 0)
+		(layer "F.SilkS")
+		(uuid "1e4fc958-ddea-4685-9624-887647b76f50")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.1)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "PCB_Plaque_Basse\nINSARIANNE1"
+		(at 155.5 86.5 0)
+		(layer "F.SilkS")
+		(uuid "2787c4c7-68a1-496c-8b38-1dc12edea7f9")
+		(effects
+			(font
+				(size 1.5 1.5)
+				(thickness 0.2)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "INS'aéro"
+		(at 155.5 88 0)
+		(layer "F.SilkS")
+		(uuid "b53c675b-a718-4701-a631-1fb557a599e6")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.1)
+			)
+			(justify left bottom)
+		)
+	)
 	(segment
 		(start 148.88 79.88)
 		(end 150.495 78.265)
@@ -3524,7 +3560,7 @@
 		)
 		(polygon
 			(pts
-				(xy 83.5 45) (xy 83.5 151) (xy 83.5 151) (xy 195.5 151) (xy 195.5 45)
+				(xy 83.5 45) (xy 83.5 151) (xy 195.5 151) (xy 195.5 45)
 			)
 		)
 		(filled_polygon
