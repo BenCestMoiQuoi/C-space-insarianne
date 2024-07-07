@@ -1,4 +1,5 @@
 {
     "board": "arduino:avr:nano",
-    "port": "COM8"
+    "port": "COM8",
+    "sketch": "Programmes_finaux\\Autonome\\Autonome.ino"
 }

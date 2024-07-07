@@ -26,10 +26,8 @@ Date : 20/01/2023
 
 #define Val_Timer 3000 // 3s ici
 
-Servo servo_haut;
-Servo servo_bas;
-#define Pin_Servo_Bas 9
-#define Pin_Servo_Haut 10
+Servo servo;
+#define Pin_Servo 10
 
 
 /*  Declare the variables  */
@@ -43,38 +41,6 @@ unsigned long count_ms;
 unsigned long count_s;
 
 /*  Initialisation  */
-
-void Init_Timer(){
-  /*
-  Initialisation du Timer, 
-  le timmer est fait pour une intervalle de 1 seconde,
-  une interruption pour l'update se fait toutes les 1ms.
-
-  Pour comprendre, faut se référer à la 
-    Datasheet ATMEGA48A
-  l'init du timer se fait par les registres de ce micro-processeur
-  (Celui de l'Arduino Nano) Clk = 16 MHz
-  
-  Nous allons utilisez le Timmer 0 pour nous faire notre horloge.
-  Le Timmer 1 est utilisé pour les deux servo en pin PWM 9 et 10 par la librairie Servo.
-  */
-  cli();//stop interrupts
-
-  //set timer0 interrupt at 1kHz
-  TCCR0A = 0 | _BV(WGM01); // turn on CTC mode
-  TCCR0B = 0 | _BV(CS01) | _BV(CS00); //Set the prescale 1/64 clock
-  TIMSK0 |= _BV(OCIE0A); //Set the interrupt request
-  // set compare match register for 1khz increments
-  OCR0A = 249;// = (16*10^6) / (1000*64) - 1 (must be <256)
-  
-
-  sei(); //Enable interrupt
-  // Init variable timer
-  timer_ms = 0;
-  timer_info = 0;
-  count_ms = 0;
-  count_s = 0;
-}
 
 void Init_Sol(){
   /* 
@@ -102,11 +68,9 @@ void Init_Vol(){
   Avec 2 Servomoteur
   (Etat_vol = 0)
   */
-  servo_bas.attach(Pin_Servo_Bas);
-  servo_bas.write(0);
 
-  servo_haut.attach(Pin_Servo_Haut);
-  servo_haut.write(0);
+  servo.attach(Pin_Servo);
+  servo.write(0);
 
   Etat_vol = false;
 }
@@ -119,29 +83,27 @@ void Verif_Sol(){
   Etat_sol = 1 
       LED 1 --> Alumé
       LED 2 --> Eteinte
-      Servo_haut --> 0
+      Servo --> 0
   Etat_sol = 2 (si prise Jack branché)
       LED 1 --> Eteinte
       LED 2 --> Alumé
-      Servo_haut --> 180
+      Servo --> 180
   Etat_sol = 3 (dernière validation)
       LED 1 --> Alumé
       LED 2 --> Alumé
-      Servo_haut --> 180
+      Servo --> 180
   Lorsque le Jack et débranché, Etat_vol = True
   */
   if (!digitalRead(Switch_pin_sol_1) && (Etat_sol == 2 || Etat_sol == 3)){
     Etat_sol = 1;
     write_LED_Sol();
-    servo_haut.write(0);
-    servo_bas.write(0);
+    servo.write(0);
   }
   if (digitalRead(Switch_pin_sol_1) && Etat_sol == 1) {
-    servo_haut.write(90);
-    servo_bas.write(90);
+    servo.write(90);
   }
   if (Etat_sol == 1 && digitalRead(Switch_pin_sol_1) && !digitalRead(Switch_pin_sol_2) 
-        && !digitalRead(Jack_pin) && servo_haut.read()==90 && servo_bas.read()==90){
+        && !digitalRead(Jack_pin) && servo.read()==90){
     Etat_sol = 2;
     write_LED_Sol();
   }
@@ -168,10 +130,8 @@ void Ouverture_porte(){
   Ouverture du servo haut (locket)
   Puis 
   */
-  timer_ms = 0;
   while (timer_ms < 500) {
-    servo_haut.write(0);
-    servo_bas.write(0);
+    servo.write(0);
   }
 }
 
@@ -180,25 +140,9 @@ void Sol(){
   Fonction de la fusée lorsqu'elle est au sol.
   Et lorsque que l'initialisation est faite.
   S'arrete lorsque la prise jack (ici le 3e switch) est arraché
-    Etat_vol devient True
-
-    Plusieurs phase sont considéré : 
-      - Phase 1 : 
-        LED 1 -> Allumée
-        En attante de pose de la porte
-        Une fois la porte monté, appuyer sur le switch 1
-      Entre P1 et P2, Servo_Haut se ferme
-
-      - Phase 2 :
-        LED 2 -> Allumée
-        En attente d'une dernière validation (porte bien fermé)
-        Appuyer sur le switch 2
-      - Phase 3 :
-        LED 1 et LED 2 -> Allumée
-        En attante de lancement (arrachement de la prise jack)
   */
+ 
   Etat_vol = false;
-  timer_ms = 0;
   while (!Etat_vol){
     Verif_Sol();
   }
@@ -208,12 +152,11 @@ void Vol(){
   /*
   Fonction de la fusée lorsqu'elle est en vol.
   */
-  timer_ms = 0;
   //while (timer_ms < Val_Timer) {
   //  Serial.print("Lancement");
   //  Serial.println(timer_ms);
   //}
-  delay(3000);
+  delay(Val_Timer);
   Ouverture_porte();
 }
 
@@ -247,13 +190,12 @@ void setup() {
   Init_Sol();
   //Init_Timer();
   Init_Vol();
+  servo.detach(Pin_Servo);
 
 
   while(digitalRead(Switch_pin_sol_1) || digitalRead(Switch_pin_sol_2));
   
   Etat_sol = 1;
-  count_ms = 0;
-  count_s = 0;
   write_LED_Sol();
   
   /*  Main program  */
@@ -261,9 +203,3 @@ void setup() {
   Vol();
 }
 void loop() {}
-/*
-ISR(TIMER0_COMPA_vect){    //This  is the interrupt request
-  timer_ms++;
-  count_ms++;
-  timer_info++;
-}*/

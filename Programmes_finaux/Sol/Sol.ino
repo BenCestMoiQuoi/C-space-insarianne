@@ -1,5 +1,6 @@
 #include <SPI.h>
 #include <LoRa.h>
+#define frequence 915E6 //fréquence séléctionnée
 
 void setup() {
   Serial.begin(9600);
@@ -7,7 +8,7 @@ void setup() {
 
   Serial.println("LoRa Receiver");
 
-  if (!LoRa.begin(915E6)) {
+  if (!LoRa.begin(frequence)) { 
     Serial.println("Starting LoRa failed!");
     while (1);
   }
