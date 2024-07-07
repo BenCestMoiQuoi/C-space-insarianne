@@ -1,33 +1,24 @@
-#include <SPI.h>
-#include <LoRa.h>
-#define frequence 915E6 //fréquence séléctionnée
+#include <I2C_Insarianne.h>
+
+#define frequence 868E6
+#define LORA_pin 5
+
+#define Vitesse_Serial 9600
 
 void setup() {
-  Serial.begin(9600);
-  while (!Serial);
+  Serial.begin(Vitesse_Serial);
+  while(!Serial);
 
-  Serial.println("LoRa Receiver");
 
-  if (!LoRa.begin(frequence)) { 
-    Serial.println("Starting LoRa failed!");
-    while (1);
-  }
+  LoRa.begin(frequence, LORA_pin);
+  Serial.write("Init completed")
 }
 
 void loop() {
-  // try to parse packet
   int packetSize = LoRa.parsePacket();
-  if (packetSize) {
-    // received a packet
-    Serial.print("Received packet '");
-
-    // read packet
-    while (LoRa.available()) {
-      Serial.print((char)LoRa.read());
+  if(packetSize) {
+    while(LoRa.available()) {
+      Serial.write((char)LoRa.read());
     }
-
-    // print RSSI of packet
-    Serial.print("' with RSSI ");
-    Serial.println(LoRa.packetRssi());
   }
 }
