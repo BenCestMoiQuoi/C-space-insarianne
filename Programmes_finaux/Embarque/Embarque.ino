@@ -109,9 +109,11 @@ void Init_Sensor(){
 void Verif_Sol(){
   /*
   Fonction qui permet de gérer entièrement l'état d'avancement de la fusée
-  lorsquel est au sol (Etat_sol de 1 à 3).
-
+  lorsqu'elle est au sol (Etat_sol de 1 à 3). 
   */
+  if(digitalRead(Optocoupleur_Pin)==HIGH){
+    Etat_Vol = true;
+  }
 }
 
 void Transfert_Info(unsigned long nb_ms){
@@ -172,6 +174,7 @@ void Sol(){
   Etat_vol = false;
   while (!Etat_vol){
     Verif_Sol();
+    Transfert_Info(300);
   }
 }
 
