@@ -1,19 +1,15 @@
 /*
 Programme Arduino
-Nom : Main.ino
-Auteur : Roche Corentin
-Version : 4
-Date : 20/01/2023
-
-
+Nom : Autonome.ino
+Auteur : Roche Corentin (@BenCestMoiQuoi)
+         Léopold You (@Lyouu)
+Version : 1
+Date : 07/07/2024
 */
+
+/*  Includes  */
+
 #include <Servo.h>
-#include <Wire.h>
-#include <SPI.h>
-
-#define _BV(n) (1<<n)
-
-
 
 /*  Define pins  */
 
@@ -23,10 +19,10 @@ Date : 20/01/2023
 #define Led_pin_sol_2 7
 #define Switch_pin_sol_1 2
 #define Switch_pin_sol_2 3
+#define Octocoupleur_pin 8
 
 #define Val_Timer 3000 // 3s ici
 
-Servo servo;
 #define Pin_Servo 10
 
 
@@ -35,10 +31,8 @@ Servo servo;
 int Etat_sol;
 bool Etat_vol;
 
-unsigned long timer_ms;
-unsigned long timer_info;
-unsigned long count_ms;
-unsigned long count_s;
+Servo servo;
+
 
 /*  Initialisation  */
 
@@ -56,7 +50,9 @@ void Init_Sol(){
   pinMode(Switch_pin_sol_2, INPUT_PULLUP);
   
   pinMode(Jack_pin, INPUT_PULLUP);
+  pinMode(Octocoupleur_pin, OUTPUT);
 
+  digitalWrite(Octocoupleur_pin, LOW);
   Etat_sol = 0;
   write_LED_Sol();
 }
@@ -65,7 +61,7 @@ void Init_Vol(){
   /* 
   Initialisation de la phase de vol
   
-  Avec 2 Servomoteur
+  Avec 1 Servomoteur
   (Etat_vol = 0)
   */
 
@@ -124,22 +120,18 @@ void Verif_Sol(){
 
 void Ouverture_porte(){
   /*
-  Fonction qui permet d'ouvrir la trappe tout en transmettant 
-  les données des capteurs
-
-  Ouverture du servo haut (locket)
-  Puis 
+  Fonction qui permet d'ouvrir la trappe
+  Ouverture du servo (locket)
   */
-  while (timer_ms < 500) {
-    servo.write(0);
-  }
+
+  servo.write(0);
 }
 
 void Sol(){
   /*
   Fonction de la fusée lorsqu'elle est au sol.
   Et lorsque que l'initialisation est faite.
-  S'arrete lorsque la prise jack (ici le 3e switch) est arraché
+  S'arrete lorsque la prise jack (ici le 3e switch) est arraché.
   */
  
   Etat_vol = false;
@@ -151,13 +143,13 @@ void Sol(){
 void Vol(){
   /*
   Fonction de la fusée lorsqu'elle est en vol.
+  Attente du timmer avant d'ouvrir la porte.
   */
-  //while (timer_ms < Val_Timer) {
-  //  Serial.print("Lancement");
-  //  Serial.println(timer_ms);
-  //}
+
   delay(Val_Timer);
   Ouverture_porte();
+  delay(Val_Timer);
+  servo.detach()
 }
 
 void write_LED_Sol(){
@@ -185,13 +177,8 @@ void write_LED_Sol(){
 }
 
 void setup() {
-  Serial.begin(9600);
-
   Init_Sol();
-  //Init_Timer();
   Init_Vol();
-  servo.detach(Pin_Servo);
-
 
   while(digitalRead(Switch_pin_sol_1) || digitalRead(Switch_pin_sol_2));
   
@@ -202,4 +189,5 @@ void setup() {
   Sol();
   Vol();
 }
+
 void loop() {}
