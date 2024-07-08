@@ -138,12 +138,12 @@ void Transfert_Info(unsigned long nb_ms){
     
     lora.beginPacket();
     lora.print(num_packet); lora.print('\t');
-    lora.print(mpu.accX); lora.print('\t');
-    lora.print(mpu.accY); lora.print('\t');
     lora.print(mpu.accZ); lora.print('\t');
-    lora.print(mpu.gyroX); lora.print('\t');
-    lora.print(mpu.gyroY); lora.print('\t');
+    lora.print(mpu.accY); lora.print('\t');
+    lora.print(mpu.accX); lora.print('\t');
     lora.print(mpu.gyroZ); lora.print('\t');
+    lora.print(mpu.gyroY); lora.print('\t');
+    lora.print(mpu.gyroX); lora.print('\t');
     lora.print(mpu.temperature); lora.print('\t');
     lora.print(bmp.pressure); lora.print('\t');
     lora.print(bmp.altitude); lora.print('\t');
@@ -153,12 +153,12 @@ void Transfert_Info(unsigned long nb_ms){
 
     myFile = SD.open(path,FILE_WRITE);
     myFile.print(num_packet); myFile.print('\t');
-    myFile.print(mpu.accX); myFile.print('\t');
-    myFile.print(mpu.accY); myFile.print('\t');
     myFile.print(mpu.accZ); myFile.print('\t');
-    myFile.print(mpu.gyroX); myFile.print('\t');
-    myFile.print(mpu.gyroY); myFile.print('\t');
+    myFile.print(mpu.accY); myFile.print('\t');
+    myFile.print(mpu.accX); myFile.print('\t');
     myFile.print(mpu.gyroZ); myFile.print('\t');
+    myFile.print(mpu.gyroY); myFile.print('\t');
+    myFile.print(mpu.gyroX); myFile.print('\t');
     myFile.print(mpu.temperature); myFile.print('\t');
     myFile.print(bmp.pressure); myFile.print('\t');
     myFile.print(bmp.altitude); myFile.print('\t');
