@@ -16,13 +16,15 @@ Date : 07/07/2024
 
 LoRa lora;
 
+
 void setup() {
   Serial.begin(Vitesse_Serial);
   while(!Serial);
 
-
-  lora.begin(frequence, LORA_pin);
-  Serial.write("Init completed");
+  if(!lora.begin(frequence, LORA_pin)){
+    Serial.println("Init uncompled, please retry !");  
+    while(1);
+  }
 }
 
 void loop() {

@@ -149,7 +149,7 @@ void Vol(){
   delay(Val_Timer);
   Ouverture_porte();
   delay(Val_Timer);
-  servo.detach()
+  servo.detach();
 }
 
 void write_LED_Sol(){

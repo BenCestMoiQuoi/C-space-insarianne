@@ -11,6 +11,6 @@ from Applications import Application
 if __name__ == '__main__':
     
     app = QtWidgets.QApplication([])
-    Win = Application('save.txt')
+    Win = Application('Mesure')
     
     app.exec()

@@ -10,6 +10,7 @@ Date : 07/07/2024
 /*  Includes  */
 
 #include <I2C_Insarianne.h>
+#include <Adafruit_BMP085.h>
 #include <SD.h>
 
 
@@ -17,10 +18,10 @@ Date : 07/07/2024
 
 #define _BV(n) (1<<n)
 
-#define ALTITUDE_BASE 85
+#define ALTITUDE_BASE 430
 #define Freq_LORA 868E6
 
-#define path "text.tsv"
+#define path "Mesure.tsv"
 #define tete "Num_packet\tAcc_X\tAcc_Y\tAcc_Z\tRot_X\tRot_Y\tRot_Z\tTemp\tPre\tAlt\tTemps_s\tTemps_ms"
 #define len_packet 9
 
@@ -40,9 +41,13 @@ unsigned long count_ms;
 unsigned long count_s;
 unsigned long num_packet;
 
+unsigned int pression_sea;
+long pressure;
+float altitude;
+
 File myFile;
 MPU6050 mpu;
-BMP180 bmp;
+Adafruit_BMP085 bmp;
 LoRa lora;
 
 
@@ -89,9 +94,11 @@ void Init_Sensor(){
        1 capteur de température
   */
 
+  Serial.begin(9600);
+
   mpu.begin();
   bmp.begin();
-  bmp.setSealevelPressure(ALTITUDE_BASE);
+  //pression_sea = bmp.readSealevelPressure(ALTITUDE_BASE);
 
   lora.begin(Freq_LORA, LORA_pin);
   lora.beginPacket();
@@ -133,7 +140,12 @@ void Transfert_Info(unsigned long nb_ms){
     timer_info = 0;
     num_packet ++;
 
-    bmp.read_sensor();
+    Serial.println(bmp.readPressure());
+    Serial.println(bmp.readAltitude());
+
+    pressure = bmp.readPressure();
+    altitude = bmp.readAltitude();
+
     mpu.read_sensor();
     
     lora.beginPacket();
@@ -145,8 +157,8 @@ void Transfert_Info(unsigned long nb_ms){
     lora.print(mpu.gyroY); lora.print('\t');
     lora.print(mpu.gyroX); lora.print('\t');
     lora.print(mpu.temperature); lora.print('\t');
-    lora.print(bmp.pressure); lora.print('\t');
-    lora.print(bmp.altitude); lora.print('\t');
+    lora.print(pressure); lora.print('\t');
+    lora.print(altitude); lora.print('\t');
     lora.print(count_s); lora.print('\t');
     lora.print(count_ms); lora.print('\n');
     lora.endPacket();
@@ -160,11 +172,24 @@ void Transfert_Info(unsigned long nb_ms){
     myFile.print(mpu.gyroY); myFile.print('\t');
     myFile.print(mpu.gyroX); myFile.print('\t');
     myFile.print(mpu.temperature); myFile.print('\t');
-    myFile.print(bmp.pressure); myFile.print('\t');
-    myFile.print(bmp.altitude); myFile.print('\t');
+    myFile.print(pressure); myFile.print('\t');
+    myFile.print(altitude); myFile.print('\t');
     myFile.print(count_s); myFile.print('\t');
     myFile.print(count_ms); myFile.print('\n');
     myFile.close();
+
+    Serial.print(num_packet); Serial.print('\t');
+    Serial.print(mpu.accZ); Serial.print('\t');
+    Serial.print(mpu.accY); Serial.print('\t');
+    Serial.print(mpu.accX); Serial.print('\t');
+    Serial.print(mpu.gyroZ); Serial.print('\t');
+    Serial.print(mpu.gyroY); Serial.print('\t');
+    Serial.print(mpu.gyroX); Serial.print('\t');
+    Serial.print(mpu.temperature); Serial.print('\t');
+    Serial.print(pressure); Serial.print('\t');
+    Serial.print(altitude); Serial.print('\t');
+    Serial.print(count_s); Serial.print('\t');
+    Serial.print(count_ms); Serial.print('\n');
   }
 }
 

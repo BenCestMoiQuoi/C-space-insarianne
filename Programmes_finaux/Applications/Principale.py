@@ -38,21 +38,17 @@ class Application(QtWidgets.QMainWindow):
         self.resize(1800, 900)
 
         self.init_app()
-        print('fin_init')
         self.show()
         
 
 
     def init_app(self) -> None:
-        print('debut_init')
         self.Acc3 = Graph_3Acc(self.fichier)
         self.Gyro3 = Graph_3Gyr(self.fichier)
         self.Pre = Graph_Pre(self.fichier)
         self.Temp = Graph_Temp(self.fichier)
         self.Alti = Graph_Alti(self.fichier)
-        
-        print('fin init_ graph')
-        
+                
         self.graphs.append(self.Acc3)
         self.graphs.append(self.Gyro3)
         self.graphs.append(self.Pre)
@@ -78,8 +74,7 @@ class Application(QtWidgets.QMainWindow):
         layout.addWidget(self.Alti, 0, 2, 3, 1)
         
         layout.addWidget(self.Button, 3, 2)
-        print('init_app')
-
+        
 
     def Button_clicked(self) -> None:
         if not self.state:
