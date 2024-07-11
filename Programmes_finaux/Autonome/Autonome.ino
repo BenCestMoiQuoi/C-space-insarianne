@@ -21,9 +21,13 @@ Date : 07/07/2024
 #define Switch_pin_sol_2 3
 #define Optocoupleur_pin 8
 
-#define Val_Timer 3000 // 3s ici
+#define Val_Timer 4800 //4,8s
 
 #define Pin_Servo 10
+
+#define SERVO_FERME 45
+#define SERVO_OUVERT_FULL 0
+#define SERVO_OUVERT 10
 
 
 /*  Declare the variables  */
@@ -66,7 +70,7 @@ void Init_Vol(){
   */
 
   servo.attach(Pin_Servo);
-  servo.write(0);
+  servo.write(SERVO_OUVERT_FULL);
 
   Etat_vol = false;
 }
@@ -90,16 +94,15 @@ void Verif_Sol(){
       Servo --> 180
   Lorsque le Jack et débranché, Etat_vol = True
   */
+  
   if (!digitalRead(Switch_pin_sol_1) && (Etat_sol == 2 || Etat_sol == 3)){
     Etat_sol = 1;
     write_LED_Sol();
-    servo.write(0);
-  }
-  if (digitalRead(Switch_pin_sol_1) && Etat_sol == 1) {
-    servo.write(90);
+    servo.write(SERVO_OUVERT);
   }
   if (Etat_sol == 1 && digitalRead(Switch_pin_sol_1) && !digitalRead(Switch_pin_sol_2) 
-        && !digitalRead(Jack_pin) && servo.read()==90){
+        && !digitalRead(Jack_pin)){
+    servo.write(SERVO_FERME);
     Etat_sol = 2;
     write_LED_Sol();
   }
@@ -123,8 +126,7 @@ void Ouverture_porte(){
   Fonction qui permet d'ouvrir la trappe
   Ouverture du servo (locket)
   */
-
-  servo.write(0);
+  servo.write(SERVO_OUVERT_FULL);
 }
 
 void Sol(){
@@ -135,6 +137,7 @@ void Sol(){
   */
  
   Etat_vol = false;
+  servo.write(SERVO_OUVERT);
   while (!Etat_vol){
     Verif_Sol();
   }
@@ -148,8 +151,6 @@ void Vol(){
 
   delay(Val_Timer);
   Ouverture_porte();
-  delay(Val_Timer);
-  servo.detach();
 }
 
 void write_LED_Sol(){

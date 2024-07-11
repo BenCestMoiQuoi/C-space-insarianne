@@ -14,7 +14,10 @@ if __name__ == "__main__":
             print(line)
             if line: 
                 with open(FICHIER,'a') as f:
-                    f.write(line.decode())
+                    try:
+                        f.write(line.decode())
+                    except:
+                        print("impossible")
     except KeyboardInterrupt:
         ser.close()
             

@@ -3,14 +3,13 @@ Programme Arduino
 Nom : Embarque.ino
 Auteur : Roche Corentin (@BenCestMoiQuoi)
          Léo-Paul You (@Lyouu)
-Version : 2
+Version : 3
 Date : 07/07/2024
 */
 
 /*  Includes  */
 
 #include <I2C_Insarianne.h>
-#include <Adafruit_BMP085.h>
 #include <SD.h>
 
 
@@ -19,9 +18,12 @@ Date : 07/07/2024
 #define _BV(n) (1<<n)
 
 #define ALTITUDE_BASE 430
-#define Freq_LORA 868E6
+#define Freq_LORA 866.3E6 
 
-#define path "Mesure.tsv"
+#define DELAY_INFO_SOL 200
+#define DELAY_INFO_VOL 200
+
+#define path "MESURE.TSV"
 #define tete "Num_packet\tAcc_X\tAcc_Y\tAcc_Z\tRot_X\tRot_Y\tRot_Z\tTemp\tPre\tAlt\tTemps_s\tTemps_ms"
 #define len_packet 9
 
@@ -43,11 +45,12 @@ unsigned long num_packet;
 
 unsigned int pression_sea;
 long pressure;
-float altitude;
+double altitude;
+double Altitude_base;
 
 File myFile;
 MPU6050 mpu;
-Adafruit_BMP085 bmp;
+BMP180 bmp;
 LoRa lora;
 
 
@@ -94,11 +97,10 @@ void Init_Sensor(){
        1 capteur de température
   */
 
-  Serial.begin(9600);
+  // Serial.begin(9600);
 
   mpu.begin();
   bmp.begin();
-  //pression_sea = bmp.readSealevelPressure(ALTITUDE_BASE);
 
   lora.begin(Freq_LORA, LORA_pin);
   lora.beginPacket();
@@ -121,7 +123,7 @@ void Verif_Sol(){
   if(digitalRead(Optocoupleur_Pin)==HIGH) Etat_vol = true;
 }
 
-void Transfert_Info(unsigned long nb_ms){
+void Transfert_Info(int nb_ms){
   /*
   Fonction qui envoie l'ensemble des données des capteurs sur la Carte SD
   Permet également de gérer l'horloge personnalisé (secondes:milliseconde).
@@ -140,12 +142,7 @@ void Transfert_Info(unsigned long nb_ms){
     timer_info = 0;
     num_packet ++;
 
-    Serial.println(bmp.readPressure());
-    Serial.println(bmp.readAltitude());
-
-    pressure = bmp.readPressure();
-    altitude = bmp.readAltitude();
-
+    bmp.read_sensor();
     mpu.read_sensor();
     
     lora.beginPacket();
@@ -157,8 +154,8 @@ void Transfert_Info(unsigned long nb_ms){
     lora.print(mpu.gyroY); lora.print('\t');
     lora.print(mpu.gyroX); lora.print('\t');
     lora.print(mpu.temperature); lora.print('\t');
-    lora.print(pressure); lora.print('\t');
-    lora.print(altitude); lora.print('\t');
+    lora.print(bmp.Pressure); lora.print('\t');
+    lora.print(bmp.Altitude); lora.print('\t');
     lora.print(count_s); lora.print('\t');
     lora.print(count_ms); lora.print('\n');
     lora.endPacket();
@@ -172,12 +169,12 @@ void Transfert_Info(unsigned long nb_ms){
     myFile.print(mpu.gyroY); myFile.print('\t');
     myFile.print(mpu.gyroX); myFile.print('\t');
     myFile.print(mpu.temperature); myFile.print('\t');
-    myFile.print(pressure); myFile.print('\t');
-    myFile.print(altitude); myFile.print('\t');
+    myFile.print(bmp.Pressure); myFile.print('\t');
+    myFile.print(bmp.Altitude); myFile.print('\t');
     myFile.print(count_s); myFile.print('\t');
     myFile.print(count_ms); myFile.print('\n');
     myFile.close();
-
+    /*
     Serial.print(num_packet); Serial.print('\t');
     Serial.print(mpu.accZ); Serial.print('\t');
     Serial.print(mpu.accY); Serial.print('\t');
@@ -186,10 +183,11 @@ void Transfert_Info(unsigned long nb_ms){
     Serial.print(mpu.gyroY); Serial.print('\t');
     Serial.print(mpu.gyroX); Serial.print('\t');
     Serial.print(mpu.temperature); Serial.print('\t');
-    Serial.print(pressure); Serial.print('\t');
-    Serial.print(altitude); Serial.print('\t');
+    Serial.print(bmp.Pressure); Serial.print('\t');
+    Serial.print(bmp.Altitude); Serial.print('\t');
     Serial.print(count_s); Serial.print('\t');
     Serial.print(count_ms); Serial.print('\n');
+    */
   }
 }
 
@@ -197,19 +195,19 @@ void Sol(){
   Etat_vol = false;
   while (!Etat_vol){
     Verif_Sol();
-    Transfert_Info(300);
+    Transfert_Info(DELAY_INFO_SOL);
   }
 }
 
 void Vol(){
   /*
   Fonction de la fusée lorsqu'elle est en vol.
-  Toutes les 200ms on envoi des infos des capteurs
+  Toutes les 300ms on envoi des infos des capteurs
   Quand la carte reçoit un signal d'arrêt elle enregistre le nombre de mesures et arrête les mesures
   while(timer_ms<){
   }/
   */
-  while(1) Transfert_Info(200);
+  while(1) Transfert_Info(DELAY_INFO_VOL);
 }
 
 void setup() {

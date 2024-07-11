@@ -9,7 +9,7 @@ Date : 07/07/2024
 
 #include <I2C_Insarianne.h>
 
-#define frequence 868E6
+#define frequence 866.3E6
 #define LORA_pin 5
 
 #define Vitesse_Serial 9600
