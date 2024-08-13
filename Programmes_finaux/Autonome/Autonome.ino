@@ -2,9 +2,10 @@
 Programme Arduino
 Nom : Autonome.ino
 Auteur : Roche Corentin (@BenCestMoiQuoi)
-Léo-Paul You (@Lyouu)
-Version : 1
+         Léo-Paul You (@Lyouu)
+Version : 2
 Date : 07/07/2024
+Der_modif : 13/08/2024
 */
 
 /*  Includes  */
@@ -25,7 +26,7 @@ Date : 07/07/2024
 
 #define Pin_Servo 10
 
-#define SERVO_FERME 45
+#define SERVO_FERME 65
 #define SERVO_OUVERT_FULL 0
 #define SERVO_OUVERT 10
 
@@ -45,7 +46,7 @@ void Init_Sol(){
   Initialisation de la phase au sol
   
   Avec 2 LEDs, 2 Switchs et la prise Jack
-  Configure les LEDs en état "avec initialisation" 
+  Configure les LEDs en état "avant initialisation" 
   (Etat_sol = 0)
   */
   pinMode(Led_pin_sol_1, OUTPUT);
@@ -54,9 +55,15 @@ void Init_Sol(){
   pinMode(Switch_pin_sol_2, INPUT_PULLUP);
   
   pinMode(Jack_pin, INPUT_PULLUP);
-  pinMode(Optocoupleur_pin, OUTPUT);
 
-  digitalWrite(Optocoupleur_pin, LOW);
+  /*
+  Pour le moment non prise en compte de l'octocoupleur
+  Prévu pour annoncer à la deuxième carte que la fusée décolle, 
+  cette dernière étant très peu affecté dû à la vitesse de transfert des données
+  Décision prise la semaine du C'Space2024 pour simplifier l'installation
+  */
+  // pinMode(Optocoupleur_pin, OUTPUT);
+  // digitalWrite(Optocoupleur_pin, LOW);
   Etat_sol = 0;
   write_LED_Sol();
 }
@@ -83,26 +90,27 @@ void Verif_Sol(){
   Etat_sol = 1 
       LED 1 --> Alumé
       LED 2 --> Eteinte
-      Servo --> 0
+      Trappe ouverte
   Etat_sol = 2 (si prise Jack branché)
       LED 1 --> Eteinte
       LED 2 --> Alumé
-      Servo --> 180
+      Trappe fermée
   Etat_sol = 3 (dernière validation)
       LED 1 --> Alumé
       LED 2 --> Alumé
-      Servo --> 180
-  Lorsque le Jack et débranché, Etat_vol = True
+      Trappe fermée
+  Lorsque le Jack est débranché, Etat_vol = True
+    démmarage timer
   */
   
   if (!digitalRead(Switch_pin_sol_1) && (Etat_sol == 2 || Etat_sol == 3)){
     Etat_sol = 1;
     write_LED_Sol();
-    servo.write(SERVO_OUVERT);
+    Ouverture_porte(false);
   }
   if (Etat_sol == 1 && digitalRead(Switch_pin_sol_1) && !digitalRead(Switch_pin_sol_2) 
         && !digitalRead(Jack_pin)){
-    servo.write(SERVO_FERME);
+    Fermeture_porte();
     Etat_sol = 2;
     write_LED_Sol();
   }
@@ -121,13 +129,22 @@ void Verif_Sol(){
   }
 }
 
-void Ouverture_porte(){
+void Ouverture_porte(bool entier = true){
   /*
   Fonction qui permet d'ouvrir la trappe
   Ouverture du servo (locket)
   */
-  servo.write(SERVO_OUVERT_FULL);
+  if (entier == true) servo.write(SERVO_OUVERT_FULL);
+  else servo.write(SERVO_OUVERT);
 }
+
+void Fermeture_porte()[
+  /*
+  Fonction qui permet de fermer la trappe
+  Fermeture du servo
+  */
+ servo.write(SERVO_FERME);
+]
 
 void Sol(){
   /*
@@ -137,7 +154,7 @@ void Sol(){
   */
  
   Etat_vol = false;
-  servo.write(SERVO_OUVERT);
+  Ouverture_porte(false);
   while (!Etat_vol){
     Verif_Sol();
   }
@@ -146,11 +163,11 @@ void Sol(){
 void Vol(){
   /*
   Fonction de la fusée lorsqu'elle est en vol.
-  Attente du timmer avant d'ouvrir la porte.
+  Attente du timer avant d'ouvrir la porte.
   */
 
   delay(Val_Timer);
-  Ouverture_porte();
+  Ouverture_porte(true);
 }
 
 void write_LED_Sol(){
@@ -178,9 +195,12 @@ void write_LED_Sol(){
 }
 
 void setup() {
+  // Phase d'initialisation
   Init_Sol();
   Init_Vol();
-
+  /*
+  Attente des deux switch en position 0
+  */
   while(digitalRead(Switch_pin_sol_1) || digitalRead(Switch_pin_sol_2));
   
   Etat_sol = 1;

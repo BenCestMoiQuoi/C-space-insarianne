@@ -5,11 +5,14 @@ Auteur : Roche Corentin (@BenCestMoiQuoi)
          Léo-Paul You (@Lyouu)
 Version : 3
 Date : 07/07/2024
+Der_modif : 13/08/2024
 */
 
 /*  Includes  */
 
-#include <I2C_Insarianne.h>
+#include <INSARIANNE_BMP085.h>
+#include <INSARIANNE_MPU6050.h>
+#include <INSARIANNE_LORA.h>
 #include <SD.h>
 
 
@@ -20,7 +23,7 @@ Date : 07/07/2024
 #define ALTITUDE_BASE 430
 #define Freq_LORA 866.3E6 
 
-#define DELAY_INFO_SOL 200
+#define DELAY_INFO_SOL 400
 #define DELAY_INFO_VOL 200
 
 #define path "MESURE.TSV"
@@ -30,6 +33,8 @@ Date : 07/07/2024
 #define SD_pin 6
 #define LORA_pin 5
 #define Optocoupleur_Pin 4
+
+#define If_Octocoupleur false
 
 
 
@@ -59,7 +64,7 @@ LoRa lora;
 void Init_Timer(){
   /*
   Initialisation du Timer, 
-  le timmer est fait pour une intervalle de 1 seconde,
+  le timer est fait pour une intervalle de 1 seconde,
   une interruption pour l'update se fait toutes les 1ms.
 
   Pour comprendre, faut se référer à la 
@@ -67,8 +72,7 @@ void Init_Timer(){
   l'init du timer se fait par les registres de ce micro-processeur
   (Celui de l'Arduino Nano) Clk = 16 MHz
   
-  Nous allons utilisez le Timmer 0 pour nous faire notre horloge.
-  Le Timmer 1 est utilisé pour les deux servo en pin PWM 9 et 10 par la librairie Servo.
+  Nous allons utilisez le Timer 0 pour nous faire notre horloge.
   */
   cli();//stop interrupts
 
@@ -192,7 +196,12 @@ void Transfert_Info(int nb_ms){
 }
 
 void Sol(){
-  Etat_vol = false;
+  /*
+  Si l'octocoupleur est utiliser, on se fit à lui
+  pour passer en mode vol, sinon on y est de base
+  */
+  if (If_Octocoupleur = true) Etat_vol = false;
+  else Etat_vol = true;
   while (!Etat_vol){
     Verif_Sol();
     Transfert_Info(DELAY_INFO_SOL);
